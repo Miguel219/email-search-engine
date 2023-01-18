@@ -71,7 +71,7 @@ export const useEmailStore = defineStore({
                 ...email,
                 _source: {
                   ...email._source,
-                  Date: new Date(email._source.Date).toLocaleString(),
+                  date: new Date(email._source.date).toLocaleString(),
                 },
               })),
               response.data.hits.total.value,

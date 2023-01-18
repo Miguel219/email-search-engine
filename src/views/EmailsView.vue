@@ -84,10 +84,10 @@ export default {
       :data="
         emails.map((email) => ({
           _id: email._id,
-          from: email._source.From ?? 'N/A',
-          to: email._source.To ?? 'N/A',
-          date: email._source.Date ?? 'N/A',
-          subject: email._source.Subject ?? 'N/A',
+          from: email._source.from ?? 'N/A',
+          to: email._source.to ?? 'N/A',
+          date: email._source.date ?? 'N/A',
+          subject: email._source.subject ?? 'N/A',
           actions: 'Ver detalle',
         }))
       "

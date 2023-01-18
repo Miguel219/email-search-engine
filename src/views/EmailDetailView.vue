@@ -21,41 +21,41 @@ export default {
   <div v-if="selectedEmail" class="drop-shadow-2xl bg-white px-8 rounded-lg">
     <div class="border-b-4 py-4">
       <h3 class="font-bold">
-        {{ selectedEmail._source.Subject }}
+        {{ selectedEmail._source.subject }}
       </h3>
       <div class="flex">
-        <p class="font-bold mr-1">Message-ID:</p>
+        <p class="font-bold mr-1">messageID:</p>
         <p>
-          {{ selectedEmail._source["Message-ID"] }}
+          {{ selectedEmail._source.messageID }}
         </p>
       </div>
     </div>
     <div class="border-b-4 py-4">
       <div class="flex justify-between">
         <div class="flex items-center">
-          <InitialsImage :name="selectedEmail._source['X-From']" />
+          <InitialsImage :name="selectedEmail._source.xFrom" />
           <div class="ml-1">
             <h5>
-              {{ selectedEmail._source["X-From"] }}
+              {{ selectedEmail._source.xFrom }}
             </h5>
             <p>
-              {{ `<${selectedEmail._source.From}>` }}
+              {{ `<${selectedEmail._source.from}>` }}
             </p>
           </div>
         </div>
         <p>
-          {{ selectedEmail._source.Date }}
+          {{ selectedEmail._source.date }}
         </p>
       </div>
       <div class="flex mt-1">
         <p class="font-bold mr-1">Para:</p>
         <p>
-          {{ selectedEmail._source.To }}
+          {{ selectedEmail._source.to }}
         </p>
       </div>
     </div>
     <p class="py-4" style="white-space: pre-line">
-      {{ selectedEmail._source.Body }}
+      {{ selectedEmail._source.body }}
     </p>
   </div>
 </template>
