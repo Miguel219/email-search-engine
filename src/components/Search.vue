@@ -1,5 +1,32 @@
+<script lang="ts">
+import { debounce } from "lodash";
+export default {
+  name: "Search",
+  props: {
+    text: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    updateInternalValue(event: any) {
+      this.updateValue(event.target.value);
+    },
+    updateValue(value: string) {
+      this.$emit("update:text", value);
+    },
+  },
+  emits: ["update:text"],
+  created() {
+    this.updateValue = debounce(this.updateValue, 1000);
+  },
+};
+</script>
+
 <template>
-  <div class="flex bg-gray-50 items-center m-3 p-2 rounded-md">
+  <div
+    class="flex bg-gray-100 items-center mx-12 my-5 p-2 shadow rounded-lg overflow-hidden"
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-5 w-5 text-gray-400"
@@ -13,13 +40,11 @@
       />
     </svg>
     <input
-      class="bg-gray-50 outline-none ml-1 block"
+      class="bg-gray-100 outline-none ml-1 block w-full"
       type="text"
-      name=""
-      id=""
+      :value="text"
+      @input="updateInternalValue"
       placeholder="Search..."
     />
   </div>
 </template>
-
-<style></style>

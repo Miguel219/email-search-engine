@@ -1,61 +1,89 @@
-import { ref, computed } from "vue";
+import { fetchEmailsService } from "@/services/emails";
 import { defineStore } from "pinia";
-import { CREDS_BASE64, HOST } from "../types/server_host";
+
+interface EmailStore {
+  emails: any[];
+  selectedEmailId?: number;
+  term: string;
+  page: number;
+  pageSize: number;
+  total: number;
+  isLoading: boolean;
+  error: any;
+}
 
 export const useEmailStore = defineStore({
   id: "emails",
-  state: () => ({
-    emails: [],
-    email: {},
-    page: 0,
-    loading: false,
-    error: {},
-  }),
+  state: () =>
+    ({
+      emails: [],
+      selectedEmailId: undefined,
+      term: "",
+      page: 0,
+      pageSize: 20,
+      total: 0,
+      isLoading: false,
+      error: {},
+    } as EmailStore),
   getters: {
     getEmails: (state) => state.emails,
-    getEmail: (state) => state.email,
+    getSelectedEmail: (state) =>
+      state.emails.filter((email) => email._id === state.selectedEmailId)[0],
+    getTerm: (state) => state.term,
     getPage: (state) => state.page,
-    isLoading: (state) => state.loading,
+    getPageSize: (state) => state.pageSize,
+    getTotal: (state) => state.total,
+    getIsLoading: (state) => state.isLoading,
     getError: (state) => state.error,
   },
   actions: {
+    changeTerm(newValue: string) {
+      this.term = newValue;
+      this.page = 0;
+      this.fetchEmails();
+    },
+    selectEmail(id: number) {
+      this.selectedEmailId = id;
+      console.log(
+        this.emails.filter((email) => email._id === this.selectedEmailId)[0]
+      );
+    },
+    prevPage() {
+      this.page--;
+      this.fetchEmails();
+    },
+    nextPage() {
+      this.page++;
+      this.fetchEmails();
+    },
     async fetchEmails() {
-      this.loading = true;
-      try {
-        var emailsss = await fetch(HOST + "/api/emails/_search", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            Authorization: "Basic " + CREDS_BASE64,
-          },
-          body: JSON.stringify({
-            search_type: "matchphrase",
-            query: {
-              term: "hello",
-              start_time: "2023-01-01T19:14:45-06:00",
-            },
-            sort_fields: ["-@timestamp"],
-            from: 0,
-            max_results: 20,
-            _source: [],
-          }),
+      this.isLoading = true;
+      [this.emails, this.total, this.error] = await fetchEmailsService(
+        this.term,
+        this.page * this.pageSize,
+        this.pageSize
+      )
+        .then((response): [any[], number, any] => {
+          if (response) {
+            const emails = response.data.hits.hits;
+            return [
+              emails.map((email: any) => ({
+                ...email,
+                _source: {
+                  ...email._source,
+                  Date: new Date(email._source.Date).toLocaleString(),
+                },
+              })),
+              response.data.hits.total.value,
+              {},
+            ];
+          }
+          return [[], 0, {}];
         })
-          .then((response) => {
-            if (!response.ok) throw response.statusText;
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Dataaa");
-            console.log(data);
-          });
-      } catch (error: any) {
-        console.log(error);
-        this.emails = [];
-        this.error = error;
-      } finally {
-        this.loading = false;
-        console.log("FIN");
-      }
+        .catch((error) => {
+          return [[], 0, error];
+        });
+      this.isLoading = false;
     },
   },
 });
