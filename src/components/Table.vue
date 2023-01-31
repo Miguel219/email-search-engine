@@ -10,6 +10,11 @@ export interface ColumnTypes {
 export default {
   name: "Table",
   components: { Button: Button },
+  data() {
+    return {
+      cols: `grid-cols-5`,
+    };
+  },
   props: {
     columns: {
       type: Array<ColumnTypes>,
@@ -52,24 +57,24 @@ export default {
 </script>
 
 <template>
-  <div class="min-w-full drop-shadow-lg rounded-lg">
+  <div class="drop-shadow-lg rounded-lg">
     <div v-if="isLoading">Cargando...</div>
-    <table v-else class="table-auto overflow-x-scroll">
+    <table v-else class="bg-white border-t flex flex-col">
       <thead>
-        <tr>
+        <tr class="grid" :class="[cols]">
           <th
             v-for="column in columns"
-            class="px-5 py-3 border-b-2 border-gray-400 bg-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+            class="py-3 border-b-2 border-gray-400 bg-gray-200 text-center text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wider"
           >
             {{ column.name }}
           </th>
         </tr>
       </thead>
-      <tbody class="overflow-y-scroll h-32">
-        <tr v-for="row in data">
+      <tbody class="overflow-auto max-h-80">
+        <tr class="grid" :class="[cols]" v-for="row in data">
           <td
             v-for="column in columns"
-            class="px-5 py-2 border-b border-gray-200 bg-white text-sm"
+            class="py-2 text-center border-b border-x border-gray-200 bg-white text-xs md:text-sm"
           >
             <p
               v-if="column.type === 'button'"
@@ -96,7 +101,7 @@ export default {
       </tbody>
     </table>
     <div
-      class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between"
+      class="px-2 md:px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between"
     >
       <span class="text-xs xs:text-sm text-gray-900">
         {{ page * pageSize + 1 }} -

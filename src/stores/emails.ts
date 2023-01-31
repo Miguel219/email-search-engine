@@ -1,4 +1,4 @@
-import { fetchEmailsService } from "@/services/emails";
+import { searchEmailsService, fetchEmailsService } from "@/services/emails";
 import { defineStore } from "pinia";
 
 interface EmailStore {
@@ -28,7 +28,7 @@ export const useEmailStore = defineStore({
   getters: {
     getEmails: (state) => state.emails,
     getSelectedEmail: (state) =>
-      state.emails.filter((email) => email._id === state.selectedEmailId)[0],
+      state.emails.filter((email) => email.id === state.selectedEmailId)[0],
     getTerm: (state) => state.term,
     getPage: (state) => state.page,
     getPageSize: (state) => state.pageSize,
@@ -40,13 +40,11 @@ export const useEmailStore = defineStore({
     changeTerm(newValue: string) {
       this.term = newValue;
       this.page = 0;
+      this.selectedEmailId = undefined;
       this.fetchEmails();
     },
     selectEmail(id: number) {
       this.selectedEmailId = id;
-      console.log(
-        this.emails.filter((email) => email._id === this.selectedEmailId)[0]
-      );
     },
     prevPage() {
       this.page--;
@@ -58,23 +56,22 @@ export const useEmailStore = defineStore({
     },
     async fetchEmails() {
       this.isLoading = true;
-      [this.emails, this.total, this.error] = await fetchEmailsService(
-        this.term,
-        this.page * this.pageSize,
-        this.pageSize
+      [this.emails, this.total, this.error] = await (this.term
+        ? searchEmailsService(
+            this.term,
+            this.page * this.pageSize,
+            this.pageSize
+          )
+        : fetchEmailsService(this.page * this.pageSize, this.pageSize)
       )
-        .then((response): [any[], number, any] => {
+        .then((response: any): [any[], number, any] => {
           if (response) {
-            const emails = response.data.hits.hits;
             return [
-              emails.map((email: any) => ({
+              response.data.emails.map((email: any) => ({
                 ...email,
-                _source: {
-                  ...email._source,
-                  date: new Date(email._source.date).toLocaleString(),
-                },
+                date: new Date(email.date).toLocaleString(),
               })),
-              response.data.hits.total.value,
+              response.data.total,
               {},
             ];
           }

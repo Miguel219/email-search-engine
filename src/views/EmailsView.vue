@@ -53,7 +53,7 @@ export default {
       "selectEmail",
     ]),
     goToEmailDetail(_: any, email: any) {
-      this.selectEmail(email._id);
+      this.selectEmail(email.id);
       this.$router.push("/email");
     },
   },
@@ -64,40 +64,38 @@ export default {
 </script>
 
 <template>
-  <div class="flex-1">
-    <div class="pb-5">
-      <h3 class="text-gray-600 font-semibold">Correos:</h3>
+  <div class="pb-5">
+    <h3 class="text-gray-600 font-semibold">Correos:</h3>
+    <span
+      class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
+    >
       <span
-        class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-      >
-        <span
-          aria-hidden
-          class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-        ></span>
-        <span class="relative">{{
-          term ? `Resultados de "${term}"` : "Todos los correos"
-        }}</span>
-      </span>
-    </div>
-    <Table
-      :columns="columns"
-      :data="
-        emails.map((email) => ({
-          _id: email._id,
-          from: email._source.from ?? 'N/A',
-          to: email._source.to ?? 'N/A',
-          date: email._source.date ?? 'N/A',
-          subject: email._source.subject ?? 'N/A',
-          actions: 'Ver detalle',
-        }))
-      "
-      :is-loading="isLoading"
-      :page="page"
-      :page-size="pageSize"
-      :total="total"
-      :prev-function="prevPage"
-      :next-function="nextPage"
-      :button-function="goToEmailDetail"
-    />
+        aria-hidden
+        class="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+      ></span>
+      <span class="relative">{{
+        term ? `Resultados de "${term}"` : "Todos los correos"
+      }}</span>
+    </span>
   </div>
+  <Table
+    :columns="columns"
+    :data="
+      emails.map((email) => ({
+        id: email.id,
+        from: email.from ?? 'N/A',
+        to: email.to ?? 'N/A',
+        date: email.date ?? 'N/A',
+        subject: email.subject ?? 'N/A',
+        actions: 'Ver detalle',
+      }))
+    "
+    :is-loading="isLoading"
+    :page="page"
+    :page-size="pageSize"
+    :total="total"
+    :prev-function="prevPage"
+    :next-function="nextPage"
+    :button-function="goToEmailDetail"
+  />
 </template>

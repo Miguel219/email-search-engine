@@ -26,14 +26,14 @@ export default {
   <button
     v-if="condition"
     @click="buttonFunction()"
-    class="text-sm text-indigo-50 transition duration-150 hover:bg-green-500 bg-cyan-600 font-semibold py-2 px-4"
+    class="text-xs md:text-sm text-indigo-50 transition duration-150 hover:bg-green-500 bg-cyan-600 font-semibold py-2 px-4"
     :class="customClass"
   >
     {{ text }}
   </button>
   <button
     v-else
-    class="text-sm text-indigo-50 bg-gray-400 cursor-default font-semibold py-2 px-4"
+    class="text-xs md:text-sm text-indigo-50 bg-gray-400 cursor-default font-semibold py-2 px-4"
     :class="customClass"
   >
     {{ text }}

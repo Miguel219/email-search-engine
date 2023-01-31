@@ -9,53 +9,65 @@ export default {
   computed: {
     ...mapState(useEmailStore, {
       selectedEmail: "getSelectedEmail",
+      term: "getTerm",
     }),
   },
   created() {
     if (this.selectedEmail == undefined) this.$router.push("/");
   },
+  watch: {
+    term() {
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
 <template>
-  <div v-if="selectedEmail" class="drop-shadow-2xl bg-white px-8 rounded-lg">
+  <div
+    v-if="selectedEmail"
+    class="truncate drop-shadow-2xl bg-white px-8 rounded-lg"
+  >
     <div class="border-b-4 py-4">
-      <h3 class="font-bold">
-        {{ selectedEmail._source.subject }}
+      <h3 class="text-xs md:text-sm font-bold">
+        {{ selectedEmail.subject }}
       </h3>
       <div class="flex">
-        <p class="font-bold mr-1">messageID:</p>
-        <p>
-          {{ selectedEmail._source.messageID }}
+        <p class="text-xs md:text-sm font-bold mr-1">messageID:</p>
+        <p class="text-xs md:text-sm">
+          {{ selectedEmail.messageID }}
         </p>
       </div>
     </div>
     <div class="border-b-4 py-4">
       <div class="flex justify-between">
         <div class="flex items-center">
-          <InitialsImage :name="selectedEmail._source.xFrom" />
+          <InitialsImage
+            class="w-10 md:w-12 mt-1"
+            :name="selectedEmail.xFrom"
+          />
           <div class="ml-1">
-            <h5>
-              {{ selectedEmail._source.xFrom }}
-            </h5>
-            <p>
-              {{ `<${selectedEmail._source.from}>` }}
+            <h6 class="md:text-xl">
+              {{ selectedEmail.xFrom }}
+            </h6>
+            <p class="text-xs md:text-sm">
+              {{ `<${selectedEmail.from}>` }}
             </p>
           </div>
         </div>
-        <p>
-          {{ selectedEmail._source.date }}
+        <p class="text-xs md:text-sm">
+          {{ selectedEmail.date }}
         </p>
       </div>
       <div class="flex mt-1">
-        <p class="font-bold mr-1">Para:</p>
-        <p>
-          {{ selectedEmail._source.to }}
+        <p class="text-xs md:text-sm font-bold mr-1">Para:</p>
+        <p class="text-xs md:text-sm">
+          {{ selectedEmail.to }}
         </p>
       </div>
     </div>
     <p class="py-4" style="white-space: pre-line">
-      {{ selectedEmail._source.body }}
+      {{ selectedEmail.body }}
     </p>
   </div>
 </template>

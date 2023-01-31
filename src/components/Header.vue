@@ -1,5 +1,5 @@
 <script lang="ts">
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useEmailStore } from "../stores/emails";
 import Search from "./Search.vue";
 export default {
@@ -12,9 +12,17 @@ export default {
       searchValue: "",
     };
   },
+  computed: {
+    ...mapState(useEmailStore, {
+      term: "getTerm",
+    }),
+  },
   watch: {
     searchValue(newValue) {
-      this.changeTerm(newValue);
+      if (this.term != newValue) this.changeTerm(newValue);
+    },
+    term(newValue) {
+      if (this.searchValue != newValue) this.searchValue = newValue;
     },
   },
   methods: {
@@ -24,5 +32,10 @@ export default {
 </script>
 
 <template>
-  <Search v-model:text="searchValue" />
+  <div class="flex">
+    <div class="md:hidden grid justify-items-center items-center h-20 w-15">
+      <img src="../assets/icons/logo.svg" alt="icon" width="40" />
+    </div>
+    <Search class="w-full" v-model:text="searchValue" />
+  </div>
 </template>

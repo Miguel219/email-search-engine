@@ -25,7 +25,7 @@ export default {
 
 <template>
   <div
-    class="flex bg-gray-100 items-center mx-12 my-5 p-2 shadow rounded-lg overflow-hidden"
+    class="flex bg-gray-100 items-center mx-6 md:mx-12 my-5 p-2 shadow rounded-lg overflow-hidden"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ export default {
       type="text"
       :value="text"
       @input="updateInternalValue"
-      placeholder="Search..."
+      placeholder="Buscar..."
     />
   </div>
 </template>
