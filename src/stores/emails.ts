@@ -1,5 +1,6 @@
 import { searchEmailsService, fetchEmailsService } from "@/services/emails";
 import { defineStore } from "pinia";
+import Swal from "sweetalert2";
 
 interface EmailStore {
   emails: any[];
@@ -78,6 +79,19 @@ export const useEmailStore = defineStore({
           return [[], 0, {}];
         })
         .catch((error) => {
+          Swal.fire({
+            text: "Error de conexión con el servidor",
+            icon: "error",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
           return [[], 0, error];
         });
       this.isLoading = false;
